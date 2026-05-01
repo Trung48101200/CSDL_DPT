@@ -218,6 +218,7 @@ def process_single_file(row_data, cfg, out_dir, x_threshold_multiplier):
                     
                     final_features = extract_features_from_array(merged_y, sr)
                     final_features["filename"] = file_name
+                    final_features["original_filename"] = f"{audio_path.stem}.ogg"
                     final_features["label"] = label
                     file_extracted_features.append(final_features)
                     
@@ -246,6 +247,7 @@ def process_single_file(row_data, cfg, out_dir, x_threshold_multiplier):
                     
                     final_features = extract_features_from_array(merged_y, sr)
                     final_features["filename"] = file_name
+                    final_features["original_filename"] = f"{audio_path.stem}.ogg"
                     final_features["label"] = label
                     file_extracted_features.append(final_features)
                     
@@ -264,6 +266,7 @@ def process_single_file(row_data, cfg, out_dir, x_threshold_multiplier):
             
             final_features = extract_features_from_array(merged_y, sr)
             final_features["filename"] = file_name
+            final_features["original_filename"] = f"{audio_path.stem}.ogg"
             final_features["label"] = label
             file_extracted_features.append(final_features)
             processed_count += 1
@@ -282,8 +285,11 @@ def step3_extract_bird_sounds(cfg: NewPreprocessConfig, df: pd.DataFrame):
     x_threshold_multiplier = 0.1
     
     total_processed_count = 0
-    all_extracted_features = []
     
+    # Xóa file CSV cũ nếu có để lúc chạy lại không bị đúp dữ liệu
+    if Path(cfg.merged_features_csv).exists():
+        Path(cfg.merged_features_csv).unlink()
+        
     max_workers = cfg.max_workers
     print(f"-> Khởi động chế độ Đa luồng (Multiprocessing) với {max_workers} CPU cores...")
     
@@ -299,20 +305,23 @@ def step3_extract_bird_sounds(cfg: NewPreprocessConfig, df: pd.DataFrame):
             try:
                 count, features = future.result()
                 total_processed_count += count
-                all_extracted_features.extend(features)
+                
+                # Cứ xong 1 file là lưu nối vào CSV ngay (chống mất dữ liệu)
+                if len(features) > 0:
+                    df_chunk = pd.DataFrame(features)
+                    # Sắp xếp original_filename lên đầu
+                    cols = ['filename', 'original_filename', 'label'] + [c for c in df_chunk.columns if c not in ['filename', 'original_filename', 'label']]
+                    df_chunk = df_chunk[cols]
+                    
+                    file_exists = Path(cfg.merged_features_csv).exists()
+                    df_chunk.to_csv(cfg.merged_features_csv, mode='a', header=not file_exists, index=False)
+                    
             except Exception as e:
                 pass
                 
-    # LƯU FILE CSV CHỨA CÁC ĐẶC TRƯNG CỦA CÁC ĐOẠN ĐÃ GỘP
-    df_features = pd.DataFrame(all_extracted_features)
-    if len(df_features) > 0:
-        cols = ['filename', 'label'] + [c for c in df_features.columns if c not in ['filename', 'label']]
-        df_features = df_features[cols]
-        df_features.to_csv(cfg.merged_features_csv, index=False)
-    
     print(f"\n-> Hoàn thành! Đã tạo ra tổng cộng {total_processed_count} đoạn âm thanh đã gộp.")
-    print(f"-> Đã xuất file CSV chứa {len(df_features.columns)} cột dữ liệu: {cfg.merged_features_csv}")
     print(f"-> Dữ liệu âm thanh được lưu trong thư mục: {cfg.bird_sounds_only_dir}")
+    print(f"-> Toàn bộ đặc trưng đã được lưu an toàn vào: {cfg.merged_features_csv}")
 
 
 def run_new_pipeline():
