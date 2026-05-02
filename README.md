@@ -1,6 +1,4 @@
-#!!!!!! LINK DRIVE Bird_images: https://drive.google.com/file/d/1G__r_phLBNyZXlz5RTEJ1Ev9vMNrs4Ei/view?usp=sharing TẢI VÀ GIẢI NÉN NGAY TẠI FILE CSDL_DPT!!!!!!
-
-# 🐦 Bird Search Engine - Hệ thống Tìm kiếm Tiếng chim hót
+# LINK DRIVE Bird_images: https://drive.google.com/file/d/1G__r_phLBNyZXlz5RTEJ1Ev9vMNrs4Ei/view?usp=sharing TẢI VÀ GIẢI NÉN NGAY TẠI FILE CSDL_DPT
 
 Hệ thống tìm kiếm tiếng chim dựa trên nội dung âm thanh (CBIR) sử dụng thuật toán **KDTree** và bộ **41 đặc trưng âm thanh** kết hợp với cơ sở dữ liệu **MySQL** để lưu trữ thông tin bách khoa loài chim.
 
