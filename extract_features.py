@@ -22,7 +22,7 @@ import librosa
 # CONFIG
 # ============================================================
 
-SR = 22050
+SR = 32000
 N_MFCC = 13
 
 
@@ -215,7 +215,7 @@ def extract_bird_features(audio_path):
 
 if __name__ == "__main__":
 
-    AUDIO_PATH = "sample-3s.wav"
+    AUDIO_PATH = "bird_sounds_only\\abethr1\\XC363503_seg6_m0.wav"
 
     features = extract_bird_features(
         AUDIO_PATH
