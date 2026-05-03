@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from extract_features import extract_bird_features
 
 # --- KHỞI TẠO CẤU HÌNH ---
 load_dotenv()
@@ -23,14 +24,6 @@ def patched_piptrack(*args, **kwargs):
     return _orig_piptrack(*args, **kwargs)
 
 librosa.piptrack = patched_piptrack
-
-try:
-    from extract_features import extract_bird_features
-except ImportError:
-    print("[!] LỖI: Không tìm thấy file extract_features.py")
-    sys.exit(1)
-
-warnings.filterwarnings('ignore')
 
 # --- PHẦN 1: KẾT NỐI CSDL ---
 def get_db_engine():
