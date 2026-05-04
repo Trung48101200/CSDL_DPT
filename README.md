@@ -3,7 +3,7 @@
 Hệ thống tìm kiếm tiếng chim dựa trên nội dung âm thanh (CBIR) sử dụng thuật toán **KDTree** và bộ **41 đặc trưng âm thanh** kết hợp với cơ sở dữ liệu **MySQL** để lưu trữ thông tin bách khoa loài chim.
 
 ## 🏗️ Sơ đồ quy trình (Workflow)
-1. **Input**: File âm thanh (`.wav`, `.mp3`).
+1. **Input**: File âm thanh (`.wav`, `.mp3`, `.ogg`).
 2. **Feature Extraction**: Trích xuất 41 đặc trưng (MFCCs, Spectral, Energy, Pitch...) qua `librosa`.
 3. **Similarity Search**: Sử dụng `KDTree` để tìm 5 láng giềng gần nhất trong không gian vector đã chuẩn hóa.
 4. **Metadata Retrieval**: Truy vấn MySQL để lấy thông tin phân loại học và hình ảnh.

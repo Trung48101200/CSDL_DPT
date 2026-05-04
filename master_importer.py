@@ -2,8 +2,10 @@ import argparse
 import os
 import sys
 from pathlib import Path
+from typing import Optional, Tuple
 
 import pandas as pd
+import soundfile as sf
 from sqlalchemy import create_engine, text
 
 # --- 1. QUẢN LÝ BIẾN MÔI TRƯỜNG ---
@@ -38,6 +40,36 @@ def ensure_database(user, password, host, port, database):
         )
 
 # --- 3. LOGIC IMPORT CHÍNH ---
+def prepare_original_audios(df: pd.DataFrame) -> pd.DataFrame:
+    if 'primary_label' not in df.columns or 'filename' not in df.columns:
+        raise ValueError(
+            "CSV for original_audios phải có cột 'primary_label' và 'filename'."
+        )
+
+    df = df.copy()
+    df['label'] = df['primary_label'].astype(str)
+    df['original_filename'] = df['filename'].astype(str).apply(lambda v: Path(v).name)
+    df['file_path'] = df['filename'].astype(str)
+
+    if 'duration' in df.columns:
+        df['duration'] = pd.to_numeric(df['duration'], errors='coerce')
+    else:
+        df['duration'] = None
+
+    if 'sample_rate' in df.columns:
+        df['sample_rate'] = pd.to_numeric(df['sample_rate'], errors='coerce')
+    else:
+        df['sample_rate'] = None
+
+    return df[[
+        'original_filename',
+        'label',
+        'file_path',
+        'duration',
+        'sample_rate'
+    ]]
+
+
 def run_import(args):
     print(f"[*] Đang nạp dữ liệu từ: {args.csv}")
     df = pd.read_csv(args.csv)
@@ -46,6 +78,10 @@ def run_import(args):
     if 'image_url' in df.columns:
         df = df.drop(columns=['image_url'])
         print("[+] Đã tự động loại bỏ cột 'image_url' để tiết kiệm không gian DB.")
+
+    # Nếu đang import bảng original_audios, chuyển đổi dữ liệu sang schema mới
+    if args.table == 'original_audios':
+        df = prepare_original_audios(df)
 
     # Đảm bảo DB tồn tại và tạo kết nối
     ensure_database(args.user, args.password, args.host, args.port, args.database)

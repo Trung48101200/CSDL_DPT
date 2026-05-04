@@ -1,0 +1,70 @@
+# Data & Audio Files
+/bird_sounds_only/
+/test_soundscapes/
+/train_audio/
+/uploads/
+/temp_uploads/
+/bird_images/
+/audio
+*.csv
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+MANIFEST
+dist/
+build/
+.eggs/
+
+# Virtual Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+*.iml
+*.iws
+*.ipr
+.sublime-workspace
+.sublime-project
+
+# Logs & Cache
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.dmypy.json
+
+# OS Files
+.DS_Store
+Thumbs.db
+.directory
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.sql
+*~
+.*.swp
+.*.swo
